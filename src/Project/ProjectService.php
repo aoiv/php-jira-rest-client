@@ -5,6 +5,7 @@ namespace JiraRestApi\Project;
 use JiraRestApi\Issue\IssueType;
 use JiraRestApi\Issue\Reporter;
 use JiraRestApi\Issue\Version;
+use JiraRestApi\Component\Component;
 use JiraRestApi\JiraException;
 
 class ProjectService extends \JiraRestApi\JiraClient
@@ -256,6 +257,30 @@ class ProjectService extends \JiraRestApi\JiraClient
         );
 
         return $versions;
+    }
+
+    /**
+     * get specified's project components.
+     *
+     * @param string|int $projectIdOrKey
+     *
+     * @throws \JiraRestApi\JiraException
+     *
+     * @return Component[] array of components
+     */
+    public function getComponents($projectIdOrKey)
+    {
+        $ret = $this->exec($this->uri."/$projectIdOrKey/components");
+
+        $this->log->info('Result='.$ret);
+
+        $components = $this->json_mapper->mapArray(
+            json_decode($ret, false),
+            new \ArrayObject(),
+            '\JiraRestApi\Component\Component'
+        );
+
+        return $components;
     }
 
     /**
